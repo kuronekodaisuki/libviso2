@@ -35,18 +35,9 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 #include <opencv2\core.hpp>
 #include <opencv2\imgcodecs.hpp>
-#ifdef _DEBUG
-#pragma comment(lib, "opencv_core300d")
-#pragma comment(lib, "opencv_imgproc300d")
-#pragma comment(lib, "opencv_imgcodecs300d")
-#else
-#pragma comment(lib, "opencv_core300")
-#pragma comment(lib, "opencv_imgproc300")
-#pragma comment(lib, "opencv_imgcodecs300")
-#endif // _DEBUG
+#include <opencv2\imgproc.hpp>
 
 using namespace std;
-//using namespace cv;
 
 int main (int argc, char** argv) {
 
@@ -88,7 +79,6 @@ int main (int argc, char** argv) {
     try {
 
       // load left and right input image
-#if 1
 		cv::Mat left = cv::imread(left_img_file_name, cv::IMREAD_GRAYSCALE);
 		cv::Mat right = cv::imread(right_img_file_name, cv::IMREAD_GRAYSCALE);
 
@@ -98,27 +88,6 @@ int main (int argc, char** argv) {
 
 		uint8_t *left_img_data = left.data;
 		uint8_t *right_img_data = right.data;
-#else
-      png::image< png::gray_pixel > left_img(left_img_file_name);
-      png::image< png::gray_pixel > right_img(right_img_file_name);
-
-      // image dimensions
-      int32_t width  = left_img.get_width();
-      int32_t height = left_img.get_height();
-	  int32_t bytePerLine = width;
-
-      // convert input images to uint8_t buffer
-      uint8_t* left_img_data  = (uint8_t*)malloc(width*height*sizeof(uint8_t));
-      uint8_t* right_img_data = (uint8_t*)malloc(width*height*sizeof(uint8_t));
-      int32_t k=0;
-      for (int32_t v=0; v<height; v++) {
-        for (int32_t u=0; u<width; u++) {
-          left_img_data[k]  = left_img.get_pixel(u,v);
-          right_img_data[k] = right_img.get_pixel(u,v);
-          k++;
-        }
-      }
-#endif
 
       // status
       cout << "Processing: Frame: " << i;
@@ -140,10 +109,6 @@ int main (int argc, char** argv) {
       } else {
         cout << " ... failed!" << endl;
       }
-
-      // release uint8_t buffers
-      //free(left_img_data);
-      //free(right_img_data);
 
     // catch image read errors here
     } catch (...) {
