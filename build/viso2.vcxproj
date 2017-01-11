@@ -147,22 +147,6 @@
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\demo _with_opencv.cpp" />
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\filter.cpp" />
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\matcher.cpp" />
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\matrix.cpp" />
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\reconstruction.cpp" />
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\triangle.cpp" />
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\viso.cpp" />
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\viso_mono.cpp" />
-    <ClCompile Include="C:\Users\USER\Desktop\libviso2\src\viso_stereo.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="C:/Users/USER/Desktop/libviso2/build/ZERO_CHECK.vcxproj">
-      <Project>37BD0EFC-1666-3F0D-8D97-090EBB750566</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

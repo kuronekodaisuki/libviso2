@@ -90,7 +90,7 @@ int main (int argc, char** argv) {
 		uint8_t *right_img_data = right.data;
 
       // status
-      cout << "Processing: Frame: " << i;
+      cout << i;
       
       // compute visual odometry
       int32_t dims[] = {width,height,bytePerLine};
@@ -102,9 +102,9 @@ int main (int argc, char** argv) {
         // output some statistics
         double num_matches = viso.getNumberOfMatches();
         double num_inliers = viso.getNumberOfInliers();
-        cout << ", Matches: " << num_matches;
-        cout << ", Inliers: " << 100.0*num_inliers/num_matches << " %" << ", Current pose: " << endl;
-        cout << pose << endl << endl;
+        cout << ", " << num_matches;
+        cout << ", " << 100.0*num_inliers/num_matches << ", ";
+        cout << pose << endl;
 
       } else {
         cout << " ... failed!" << endl;
