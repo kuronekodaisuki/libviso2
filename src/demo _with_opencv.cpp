@@ -20,6 +20,10 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 */
 
 /*
+  Modified by Horoshi Matsuoka using OpenCV instead of libpng
+*/
+
+/*
   Documented C++ sample code of stereo visual odometry (modify to your needs)
   To run this demonstration, download the Karlsruhe dataset sequence
   '2010_03_09_drive_0019' from: www.cvlibs.net!
