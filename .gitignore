@@ -1,3 +1,4 @@
 /build/demo_with_opencv/x64
 /build/demo_with_opencv/Debug
 /build/x64
+/build/*.sdf
