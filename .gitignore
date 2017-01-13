@@ -3,3 +3,7 @@
 /build/x64
 /build/*.sdf
 /build/Debug
+/demo_SDL_OpenCV/Release
+/demo_SDL_OpenCV/x64
+/build/Release
+/build/ipch
