@@ -2,3 +2,4 @@
 /build/demo_with_opencv/Debug
 /build/x64
 /build/*.sdf
+/build/Debug
