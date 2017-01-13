@@ -4,6 +4,8 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_with_opencv", "demo_with_opencv\demo_with_opencv.vcxproj", "{3B930B65-D3E7-4284-A71A-944E5008D824}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_SDL_OpenCV", "..\demo_SDL_OpenCV\demo_SDL_OpenCV.vcxproj", "{A05C7C77-089B-4C98-90BF-2262FE840790}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -14,6 +16,10 @@ Global
 		{3B930B65-D3E7-4284-A71A-944E5008D824}.Debug|x64.Build.0 = Debug|x64
 		{3B930B65-D3E7-4284-A71A-944E5008D824}.Release|x64.ActiveCfg = Release|x64
 		{3B930B65-D3E7-4284-A71A-944E5008D824}.Release|x64.Build.0 = Release|x64
+		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.ActiveCfg = Debug|x64
+		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.Build.0 = Debug|x64
+		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.ActiveCfg = Release|x64
+		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
