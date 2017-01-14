@@ -5,8 +5,6 @@
 #include "App.h"
 #include <stdio.h>
 
-#include <SDL_opengl.h>
-#include <gl/GLU.h>
 
 #pragma comment(lib, "SDL2")
 #pragma comment(lib, "opengl32")
@@ -92,6 +90,16 @@ void App::update()
 	m_tickToDraw += m_interval;
 }
 
+void App::preDraw()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void App::postDraw()
+{
+	SDL_GL_SwapWindow(m_pWindow);
+}
+
 void App::draw()
 {
 	// clear
@@ -141,6 +149,31 @@ void App::draw()
 	SDL_GL_SwapWindow(m_pWindow);
 }
 
+bool App::keyHandler(int32_t key)
+{
+	// ESC
+	if (key == SDLK_ESCAPE){
+		return false;
+	}
+	return true;
+}
+
+bool App::mouseMove(int32_t x, int32_t y, int32_t dx, int32_t dy, MOUSE_BUTTON button)
+{
+	//printf("%d %d %d %d\n", x, y, dx, dy);
+	return false;
+}
+
+bool App::mouseButton(int32_t x, int32_t y, MOUSE_BUTTON button)
+{
+	return false;
+}
+
+bool App::mouseWheel(int32_t x, int32_t y)
+{
+	return false;
+}
+
 bool App::pollingEvent()
 {
 	SDL_Event ev;
@@ -156,20 +189,18 @@ bool App::pollingEvent()
 			// raise when key down
 		{
 			key = ev.key.keysym.sym;
-			// ESC
-			if (key == SDLK_ESCAPE){
-				return false;
-			}
+			return keyHandler(key);
 		}
 
 		case SDL_MOUSEMOTION:
-			printf("%d %d %d %d\n", ev.motion.xrel, ev.motion.yrel, ev.motion.x, ev.motion.y);
-			ev.button.button;
+			return mouseMove(ev.motion.x, ev.motion.y, ev.motion.xrel, ev.motion.yrel, (MOUSE_BUTTON)ev.button.button);
 			break;
 
+		case SDL_MOUSEBUTTONDOWN:
+			return mouseButton(ev.motion.x, ev.motion.y, (MOUSE_BUTTON)ev.button.button);
+
 		case SDL_MOUSEWHEEL:
-			printf("%d %d\n", ev.wheel.x, ev.wheel.y);
-			break;
+			return mouseWheel(ev.wheel.x, ev.wheel.y);
 			break;
 		}
 	}
