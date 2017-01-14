@@ -16,11 +16,21 @@ public:
 
 	bool mouseMove(int32_t x, int32_t y, int32_t dx, int32_t dy, MOUSE_BUTTON button);
 
-private:
+	struct point_3d {
+		float x, y, z;
+		float val;
+		point_3d(float x, float y, float z, float val) : x(x), y(y), z(z), val(val) {}
+	};
+
 	struct cam {
 		float p[10][3];
 		bool  keyframe;
 	};
+
+	void addCamera(Matrix H_total, float s, bool keyframe);
+	void addPoints(std::vector< std::vector<point_3d> > p);
+
+private:
 	std::vector<cam> cams;
 
 	struct pose {
