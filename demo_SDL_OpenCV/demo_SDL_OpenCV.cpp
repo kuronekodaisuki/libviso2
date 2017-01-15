@@ -20,12 +20,12 @@
 using namespace std;
 
 static const char WINDOW_CAPTION[] = "SDL with OpenGL : projection test";
-static const Uint32 WINDOW_WIDTH = 640;
-static const Uint32 WINDOW_HEIGHT = 480;
+static const Uint32 WINDOW_WIDTH = 1024;
+static const Uint32 WINDOW_HEIGHT = 768;
 static const Uint32 WINDOW_BPP = 32;
 static const Uint32 FPS = 60;
 
-#define	NUMBER_OF_FRAME	100 //373
+#define	NUMBER_OF_FRAME	373
 static float scale = 0.5;
 
 #ifdef __cplusplus

@@ -15,6 +15,7 @@ public:
 	void draw();
 
 	bool mouseMove(int32_t x, int32_t y, int32_t dx, int32_t dy, MOUSE_BUTTON button);
+	void resize(uint32_t width, uint32_t height);
 
 	struct point_3d {
 		float x, y, z;

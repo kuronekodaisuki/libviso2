@@ -269,3 +269,17 @@ bool VisualOdometryApp::mouseMove(int32_t x, int32_t y, int32_t dx, int32_t dy, 
 
 	return true;
 }
+
+void VisualOdometryApp::resize(uint32_t width, uint32_t height)
+{
+	cout << "GL Viewport size: " << width << " x " << height << endl;
+
+	int side = max(width, height);
+	glViewport((width - side) / 2, (height - side) / 2, side, side);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45, 1, 0.1, 10000);
+	glMatrixMode(GL_MODELVIEW);
+
+	update();
+}

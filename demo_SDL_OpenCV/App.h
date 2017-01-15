@@ -32,6 +32,7 @@ public:
 	virtual bool mouseMove(int32_t x, int32_t y, int32_t dx, int32_t dy, MOUSE_BUTTON button);
 	virtual bool mouseButton(int32_t x, int32_t y, MOUSE_BUTTON button);
 	virtual bool mouseWheel(int32_t x, int32_t y);
+	virtual void resize(uint32_t width, uint32_t height);
 
 protected:
 	bool m_skipDraw;

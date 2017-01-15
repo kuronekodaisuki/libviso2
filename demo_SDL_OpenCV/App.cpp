@@ -174,6 +174,11 @@ bool App::mouseWheel(int32_t x, int32_t y)
 	return false;
 }
 
+void App::resize(uint32_t width, uint32_t height)
+{
+
+}
+
 bool App::pollingEvent()
 {
 	SDL_Event ev;
@@ -191,6 +196,14 @@ bool App::pollingEvent()
 			key = ev.key.keysym.sym;
 			return keyHandler(key);
 		}
+
+		case SDL_WINDOWEVENT:
+			if (ev.window.event == SDL_WINDOWEVENT_RESIZED)
+			{
+				resize(ev.window.data1, ev.window.data2);
+				//repaint = true;
+			}
+			break;
 
 		case SDL_MOUSEMOTION:
 			return mouseMove(ev.motion.x, ev.motion.y, ev.motion.xrel, ev.motion.yrel, (MOUSE_BUTTON)ev.button.button);
