@@ -5,6 +5,12 @@
 #include <viso_mono.h>
 #include <reconstruction.h>
 
+struct Point3d {
+	float x, y, z;
+	Point3d() {}
+	Point3d(float x, float y, float z) : x(x), y(y), z(z) {}
+};
+
 class SfM
 {
 public:
@@ -26,9 +32,9 @@ public:
 
 public:
 
-	SfM(VisualOdometryMono::parameters params, const std::array<uint32_t, 3> dims, const bool use_opencl)
-		:
-		dims(dims)
+	SfM(VisualOdometryMono::parameters params, const std::array<uint32_t, 3> dims, const bool use_opencl);
 
+	void update(uint8_t* img_data);
+	const std::vector<Point3d> &getPoints();
 };
 

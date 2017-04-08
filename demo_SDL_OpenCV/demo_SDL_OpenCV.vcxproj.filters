@@ -83,5 +83,8 @@
     <ClInclude Include="..\src\viso_stereo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SfM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

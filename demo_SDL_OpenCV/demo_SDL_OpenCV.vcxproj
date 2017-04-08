@@ -145,6 +145,7 @@
     <ClInclude Include="..\src\viso_mono.h" />
     <ClInclude Include="..\src\viso_stereo.h" />
     <ClInclude Include="App.h" />
+    <ClInclude Include="SfM.h" />
     <ClInclude Include="VisualOdometryApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
