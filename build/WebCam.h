@@ -28,13 +28,13 @@ public:
 	// enum callback function
 	static int enumCamera(void* pItem, char *pName)
 	{
-	printf("%s\n", pName);
-	return 0;
+		printf("%s\n", pName);
+		return 0;
 	}
 	int main()
 	{
-	int cameraCount;
-	cameraCount = Camera::EnumDevices((PENUMDEVICE)&enumCamera, NULL);
+		int cameraCount;
+		cameraCount = Camera::EnumDevices((PENUMDEVICE)&enumCamera, NULL);
 	}
 	*/
 
