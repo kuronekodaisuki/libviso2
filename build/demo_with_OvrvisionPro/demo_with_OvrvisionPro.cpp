@@ -40,9 +40,14 @@ Usage: ./viso2 path/to/sequence/2010_03_09_drive_0019
 
 #include <viso_stereo.h>
 
+#pragma warning(push)
+#pragma warning (disable: 4819)
 #include <opencv2\core.hpp>
 #include <opencv2\imgcodecs.hpp>
 #include <opencv2\imgproc.hpp>
+#pragma warning(pop)
+
+#include <ovrvision_pro.h>
 
 using namespace std;
 
