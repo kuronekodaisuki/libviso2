@@ -42,10 +42,11 @@ Usage: ./viso2 path/to/sequence/2010_03_09_drive_0019
 
 #pragma warning(push)
 #pragma warning (disable: 4819)
-#include <opencv2\core.hpp>
-#include <opencv2\imgcodecs.hpp>
-#include <opencv2\imgproc.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/videoio.hpp>
 #pragma warning(pop)
 
 #include <ovrvision_pro.h>
@@ -63,10 +64,12 @@ int main(int argc, char** argv)
 		printf_s("Focal point: %f\n", ovrvision.GetCamFocalPoint());
 		int height = ovrvision.GetCamHeight();
 		int width = ovrvision.GetCamWidth();
+		int bytePerLine;
 		OVR::ROI roi = { 0, 0, width, height };
 		cv::Mat left, right;
-		left.create(height, width, CV_8UC4);
-		right.create(height, width, CV_8UC4);
+		left.create(height, width, CV_8UC1);
+		right.create(height, width, CV_8UC1);
+		bytePerLine = left.step;
 
 		// set most important visual odometry parameters
 		// for a full parameter list, look at: viso_stereo.h
@@ -83,10 +86,14 @@ int main(int argc, char** argv)
 		// current pose (this matrix transforms a point from the current
 		// frame's camera coordinates to the first frame's camera coordinates)
 		Matrix pose = Matrix::eye(4);
+		bool stereo = false;
 		for (bool loop = true; loop; )
 		{
 			ovrvision.Capture(OVR::Camqt::OV_CAMQT_DMS);
-			ovrvision.GetStereoImageBGRA(left.data, right.data, roi);
+
+			//ovrvision.GetStereoImageBGRA(left.data, right.data, roi);
+			ovrvision.Grayscale(left.data, right.data);
+			
 			cv::imshow("Left", left);
 			cv::imshow("Right", right);
 
@@ -95,6 +102,32 @@ int main(int argc, char** argv)
 			case 'q':
 				loop = false;
 				break;
+
+			case 's':
+				stereo = !stereo;
+				break;
+			}
+
+			if (stereo)
+			{
+				// compute visual odometry
+				int32_t dims[] = { width,height,bytePerLine };
+				if (viso.process(left.data, right.data, dims)) {
+
+					// on success, update current pose
+					pose = pose * Matrix::inv(viso.getMotion());
+
+					// output some statistics
+					double num_matches = viso.getNumberOfMatches();
+					double num_inliers = viso.getNumberOfInliers();
+					cout << ", " << num_matches;
+					cout << ", " << 100.0*num_inliers / num_matches << ", ";
+					cout << pose << endl;
+
+				}
+				else {
+					cout << " ... failed!" << endl;
+				}
 			}
 		}
 	}
