@@ -13,7 +13,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories Condition="'$(VisualStudioVersion)'=='12.0'">$(OPENCV_DIR)\x64\vc12\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_core300d.lib;opencv_imgcodecs300d.lib;opencv_imgproc300d.lib;opencv_videoio300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core300d.lib;opencv_imgcodecs300d.lib;opencv_imgproc300d.lib;opencv_highgui300d.lib;opencv_videoio300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <!-- Debug|Win32 -->
@@ -37,7 +37,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories Condition="'$(VisualStudioVersion)'=='12.0'">$(OPENCV_DIR)\x64\vc12\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_core300.lib;opencv_imgcodecs300.lib;opencv_imgproc300.lib;opencv_videoio300.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core300.lib;opencv_imgcodecs300.lib;opencv_imgproc300.lib;opencv_highgui300.lib;opencv_videoio300.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <!-- Release|Win32 -->
