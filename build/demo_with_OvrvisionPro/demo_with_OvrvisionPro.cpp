@@ -62,8 +62,8 @@ int main(int argc, char** argv)
 		if (ovrvision.Open(0, OVR::OV_CAMHD_FULL, 0) == 0)
 			puts("Can't open OvrvisionPro");
 		printf_s("Focal point: %f\n", ovrvision.GetCamFocalPoint());
-		int height = ovrvision.GetCamHeight();
-		int width = ovrvision.GetCamWidth();
+		int height = ovrvision.GetCamHeight() / 2;
+		int width = ovrvision.GetCamWidth() / 2;
 		int bytePerLine;
 		OVR::ROI roi = { 0, 0, width, height };
 		cv::Mat left, right;
@@ -87,12 +87,13 @@ int main(int argc, char** argv)
 		// frame's camera coordinates to the first frame's camera coordinates)
 		Matrix pose = Matrix::eye(4);
 		bool stereo = false;
-		for (bool loop = true; loop; )
+		int i = 0;
+		for (bool loop = true; loop; i++)
 		{
-			ovrvision.Capture(OVR::Camqt::OV_CAMQT_DMS);
+			ovrvision.Capture(OVR::Camqt::OV_CAMQT_DMSRMP);
 
 			//ovrvision.GetStereoImageBGRA(left.data, right.data, roi);
-			ovrvision.Grayscale(left.data, right.data);
+			ovrvision.GrayscaleHalf(left.data, right.data);
 			
 			cv::imshow("Left", left);
 			cv::imshow("Right", right);
@@ -110,6 +111,9 @@ int main(int argc, char** argv)
 
 			if (stereo)
 			{
+				// status
+				cout << "Processing: Frame: " << i;
+
 				// compute visual odometry
 				int32_t dims[] = { width,height,bytePerLine };
 				if (viso.process(left.data, right.data, dims)) {
@@ -120,10 +124,9 @@ int main(int argc, char** argv)
 					// output some statistics
 					double num_matches = viso.getNumberOfMatches();
 					double num_inliers = viso.getNumberOfInliers();
-					cout << ", " << num_matches;
-					cout << ", " << 100.0*num_inliers / num_matches << ", ";
+					cout << ", Matches: " << num_matches;
+					cout << ", Inliers: " << 100.0*num_inliers / num_matches << " %" << ", Current pose: " << endl;
 					cout << pose << endl;
-
 				}
 				else {
 					cout << " ... failed!" << endl;
