@@ -59,13 +59,19 @@ int main(int argc, char** argv)
 	if (ovrvision.CheckGPU())
 	{
 		// Open with OpenGL sharing mode
-		if (ovrvision.Open(0, OVR::OV_CAMHD_FULL, 0) == 0)
+		if (ovrvision.Open(0, OVR::OV_CAMHD_FULL, 0, NULL, true) == 0)
 			puts("Can't open OvrvisionPro");
 		printf_s("Focal point: %f\n", ovrvision.GetCamFocalPoint());
-		int height = ovrvision.GetCamHeight() / 2;
-		int width = ovrvision.GetCamWidth() / 2;
+		int height = ovrvision.GetCamHeight();
+		int width = ovrvision.GetCamWidth();
 		int bytePerLine;
 		OVR::ROI roi = { 0, 0, width, height };
+		cv::Mat lRGBA, rRGBA;
+		lRGBA.create(height, width, CV_8UC4);
+		rRGBA.create(height, width, CV_8UC4);
+
+		height /= 2;
+		width /= 2;
 		cv::Mat left, right;
 		left.create(height, width, CV_8UC1);
 		right.create(height, width, CV_8UC1);
@@ -88,6 +94,7 @@ int main(int argc, char** argv)
 		Matrix pose = Matrix::eye(4);
 		bool stereo = false;
 		int i = 0;
+		bool write = false;
 		for (bool loop = true; loop; i++)
 		{
 			ovrvision.Capture(OVR::Camqt::OV_CAMQT_DMSRMP);
@@ -98,6 +105,10 @@ int main(int argc, char** argv)
 			cv::imshow("Left", left);
 			cv::imshow("Right", right);
 
+			char left_name[MAX_PATH], right_name[MAX_PATH];
+			sprintf(left_name, "I1_%06d.jpg", i);
+			sprintf(right_name, "I2_%06d.jpg", i);
+
 			switch (cv::waitKey(10))
 			{
 			case 'q':
@@ -107,6 +118,18 @@ int main(int argc, char** argv)
 			case 's':
 				stereo = !stereo;
 				break;
+
+			case 'c':
+				write = !write;
+				break;
+			}
+
+			if (write)
+			{
+				ovrvision.GetStereoImageBGRA(lRGBA.data, rRGBA.data, roi);
+
+				cv::imwrite(left_name, lRGBA);
+				cv::imwrite(right_name, rRGBA);
 			}
 
 			if (stereo)

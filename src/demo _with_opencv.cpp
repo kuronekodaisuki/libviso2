@@ -40,6 +40,7 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include <opencv2\core.hpp>
 #include <opencv2\imgcodecs.hpp>
 #include <opencv2\imgproc.hpp>
+#include <opencv2/highgui.hpp>
 
 using namespace std;
 
@@ -59,10 +60,10 @@ int main (int argc, char** argv) {
   VisualOdometryStereo::parameters param;
   
   // calibration parameters for sequence 2010_03_09_drive_0019 
-  param.calib.f  = 645.24; // focal length in pixels
-  param.calib.cu = 635.96; // principal point (u-coordinate) in pixels
-  param.calib.cv = 194.13; // principal point (v-coordinate) in pixels
-  param.base     = 0.5707; // baseline in meters
+  param.calib.f  = 640; // focal length in pixels
+  param.calib.cu = 640; // principal point (u-coordinate) in pixels
+  param.calib.cv = 360; // principal point (v-coordinate) in pixels
+  param.base     = 0.38; // baseline in meters
   
   // init visual odometry
   VisualOdometryStereo viso(param);
@@ -72,10 +73,11 @@ int main (int argc, char** argv) {
   Matrix pose = Matrix::eye(4);
     
   // loop through all frames i=0:372
-  for (int32_t i=0; i<1400; i++) {
+  for (int32_t i = 1; i < 120; i++) {
 
     // input file names
-    char base_name[256]; sprintf(base_name,"%06d.png",i);
+    char base_name[256]; 
+	sprintf(base_name,"%06d.jpg",i);
     string left_img_file_name  = dir + "/I1_" + base_name;
     string right_img_file_name = dir + "/I2_" + base_name;
     
@@ -83,8 +85,22 @@ int main (int argc, char** argv) {
     try {
 
       // load left and right input image
-		cv::Mat left = cv::imread(left_img_file_name, cv::IMREAD_GRAYSCALE);
-		cv::Mat right = cv::imread(right_img_file_name, cv::IMREAD_GRAYSCALE);
+		cv::Mat l = cv::imread(left_img_file_name);
+		cv::Mat r = cv::imread(right_img_file_name);
+		cv::Mat L, R, left, right;
+		cv::cvtColor(l, L, cv::COLOR_BGR2HSV);
+		cv::cvtColor(r, R, cv::COLOR_BGR2HSV);
+
+		vector<cv::Mat> hsv;
+		cv::split(L, hsv);
+		left = hsv[1];
+		cv::split(R, hsv);
+		right = hsv[1];
+
+		//cv::imshow("LEFT", left);
+		//cv::imshow("RIGHT", right);
+		cv::imwrite(left_img_file_name + ".png", left);
+		cv::imwrite(right_img_file_name + ".png", right);
 
 		int32_t width = left.cols;
 		int32_t height = left.rows;
@@ -94,7 +110,7 @@ int main (int argc, char** argv) {
 		uint8_t *right_img_data = right.data;
 
       // status
-      cout << i;
+      cout << "Processing: Frame: " << i;
       
       // compute visual odometry
       int32_t dims[] = {width,height,bytePerLine};
@@ -106,8 +122,8 @@ int main (int argc, char** argv) {
         // output some statistics
         double num_matches = viso.getNumberOfMatches();
         double num_inliers = viso.getNumberOfInliers();
-        cout << ", " << num_matches;
-        cout << ", " << 100.0*num_inliers/num_matches << ", ";
+        cout << ", Matches: " << num_matches;
+        cout << ", Inliers: " << 100.0*num_inliers/num_matches << " %" << ", Current pose: " << endl;
         cout << pose << endl;
 
       } else {

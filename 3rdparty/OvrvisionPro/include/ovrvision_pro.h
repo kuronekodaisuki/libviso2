@@ -147,7 +147,7 @@ public:
         @param deviceType (2:D3D11, 0:OpenGL, -1:Dont share)
 		@param pD3D11Device ptr to D3D11 device when deviceType == 2
 		@return If successful, the return value is 0< */
-	int Open(int locationID, OVR::Camprop prop, int deviceType = -1, void *pD3D11Device = NULL);
+	int Open(int locationID, OVR::Camprop prop, int deviceType = -1, void *pD3D11Device = NULL, bool rectify = false);
 	/*!	@brief Close the Ovrvision Pro */
 	void Close();
 
@@ -430,7 +430,7 @@ private:
 	bool			m_isCameraSync;
 
 	//initialize setting
-	void InitCameraSetting();
+	void InitCameraSetting(bool reftification = false);
 };
 
 };
