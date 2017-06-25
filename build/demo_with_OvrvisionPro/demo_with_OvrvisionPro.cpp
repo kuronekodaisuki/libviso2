@@ -62,6 +62,9 @@ int main(int argc, char** argv)
 		if (ovrvision.Open(0, OVR::OV_CAMHD_FULL, 0, NULL, true) == 0)
 			puts("Can't open OvrvisionPro");
 		printf_s("Focal point: %f\n", ovrvision.GetCamFocalPoint());
+
+		ovrvision.SetCameraExposure(5000);
+
 		int height = ovrvision.GetCamHeight();
 		int width = ovrvision.GetCamWidth();
 		int bytePerLine;
@@ -95,6 +98,8 @@ int main(int argc, char** argv)
 		bool stereo = false;
 		int i = 0;
 		bool write = false;
+		char buffer[30];
+
 		for (bool loop = true; loop; i++)
 		{
 			ovrvision.Capture(OVR::Camqt::OV_CAMQT_DMSRMP);
@@ -109,7 +114,9 @@ int main(int argc, char** argv)
 			sprintf(left_name, "I1_%06d.jpg", i);
 			sprintf(right_name, "I2_%06d.jpg", i);
 
-			switch (cv::waitKey(10))
+			int value; // for gain / exposure
+			int code = cv::waitKey(10);
+			switch (code)
 			{
 			case 'q':
 				loop = false;
@@ -122,6 +129,49 @@ int main(int argc, char** argv)
 			case 'c':
 				write = !write;
 				break;
+
+			case 0x250000:
+				OutputDebugStringA("Å©\n");
+				break;
+
+			case 0x260000:
+				OutputDebugStringA("Å™\n");
+				//value = ovrvision.GetCameraGain();
+				//ovrvision.SetCameraGain(value + 1);
+				//printf_s("Gain:%d\n", value);
+				break;
+
+			case 0x270000:
+				OutputDebugStringA("Å®\n");
+				break;
+
+			case 0x280000:
+				OutputDebugStringA("Å´\n");
+				//value = ovrvision.GetCameraGain();
+				//ovrvision.SetCameraGain(value - 1);
+				//printf_s("Gain:%d\n", value);
+				break;
+
+			case 0x210000:
+				OutputDebugStringA("PageUp\n");
+				value = ovrvision.GetCameraExposure();
+				ovrvision.SetCameraExposure(value + 500);
+				printf_s("Exposure:%d\n", value);
+				break;
+
+			case 0x220000:
+				OutputDebugStringA("PageDown\n");
+				value = ovrvision.GetCameraExposure();
+				ovrvision.SetCameraExposure(value - 500);
+				printf_s("Exposure:%d\n", value);
+				break;
+
+			case -1:
+				break;
+
+			default:
+				sprintf_s(buffer, "%X %d\n", code, code);
+				OutputDebugStringA(buffer);
 			}
 
 			if (write)
