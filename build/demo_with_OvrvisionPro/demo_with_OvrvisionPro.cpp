@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 			puts("Can't open OvrvisionPro");
 		printf_s("Focal point: %f\n", ovrvision.GetCamFocalPoint());
 
-		ovrvision.SetCameraExposure(3000);
+		ovrvision.SetCameraExposure(2000);
 
 		int height = ovrvision.GetCamHeight();
 		int width = ovrvision.GetCamWidth();
@@ -98,6 +98,7 @@ int main(int argc, char** argv)
 		bool stereo = false;
 		int i = 0;
 		bool write = false;
+		bool rgba = false;
 		char buffer[30];
 		int interval = 30;
 
@@ -147,6 +148,10 @@ int main(int argc, char** argv)
 				cv::imshow("RGBA", rRGBA);
 				break;
 
+			case 'R':
+				rgba = !rgba;
+				break;
+
 			case 0x250000:
 				OutputDebugStringA("Å©\n");
 				break;
@@ -186,6 +191,12 @@ int main(int argc, char** argv)
 			default:
 				sprintf_s(buffer, "%X %d\n", code, code);
 				OutputDebugStringA(buffer);
+			}
+			if (rgba)
+			{
+				ovrvision.GetStereoImageBGRA(lRGBA.data, rRGBA.data, roi);
+				cv::imshow("L", lRGBA);
+				cv::imshow("R", rRGBA);
 			}
 
 			if (write)
