@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 			puts("Can't open OvrvisionPro");
 		printf_s("Focal point: %f\n", ovrvision.GetCamFocalPoint());
 
-		ovrvision.SetCameraExposure(5000);
+		ovrvision.SetCameraExposure(3000);
 
 		int height = ovrvision.GetCamHeight();
 		int width = ovrvision.GetCamWidth();
@@ -99,6 +99,7 @@ int main(int argc, char** argv)
 		int i = 0;
 		bool write = false;
 		char buffer[30];
+		int interval = 30;
 
 		for (bool loop = true; loop; i++)
 		{
@@ -115,7 +116,7 @@ int main(int argc, char** argv)
 			sprintf(right_name, "I2_%06d.jpg", i);
 
 			int value; // for gain / exposure
-			int code = cv::waitKey(10);
+			int code = cv::waitKey(interval);
 			switch (code)
 			{
 			case 'q':
@@ -130,15 +131,29 @@ int main(int argc, char** argv)
 				write = !write;
 				break;
 
+			case 'C':
+				ovrvision.GetStereoImageBGRA(lRGBA.data, rRGBA.data, roi);
+				cv::imshow("L", lRGBA);
+				cv::imshow("R", rRGBA);
+				break;
+
+			case 'l':
+				ovrvision.GetCamImageBGRA(lRGBA.data, OVR::Cameye::OV_CAMEYE_LEFT);
+				cv::imshow("RGBA", lRGBA);
+				break;
+
+			case 'r':
+				ovrvision.GetCamImageBGRA(rRGBA.data, OVR::Cameye::OV_CAMEYE_RIGHT);
+				cv::imshow("RGBA", rRGBA);
+				break;
+
 			case 0x250000:
 				OutputDebugStringA("Å©\n");
 				break;
 
 			case 0x260000:
 				OutputDebugStringA("Å™\n");
-				//value = ovrvision.GetCameraGain();
-				//ovrvision.SetCameraGain(value + 1);
-				//printf_s("Gain:%d\n", value);
+				interval += 5;
 				break;
 
 			case 0x270000:
@@ -147,22 +162,21 @@ int main(int argc, char** argv)
 
 			case 0x280000:
 				OutputDebugStringA("Å´\n");
-				//value = ovrvision.GetCameraGain();
-				//ovrvision.SetCameraGain(value - 1);
-				//printf_s("Gain:%d\n", value);
+				if (10 < interval)
+					interval -= 5;
 				break;
 
 			case 0x210000:
 				OutputDebugStringA("PageUp\n");
 				value = ovrvision.GetCameraExposure();
-				ovrvision.SetCameraExposure(value + 500);
+				ovrvision.SetCameraExposure(value + 100);
 				printf_s("Exposure:%d\n", value);
 				break;
 
 			case 0x220000:
 				OutputDebugStringA("PageDown\n");
 				value = ovrvision.GetCameraExposure();
-				ovrvision.SetCameraExposure(value - 500);
+				ovrvision.SetCameraExposure(value - 100);
 				printf_s("Exposure:%d\n", value);
 				break;
 
