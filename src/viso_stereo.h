@@ -46,7 +46,7 @@ public:
   VisualOdometryStereo (parameters param);
   
   // deconstructor
-  ~VisualOdometryStereo ();
+  virtual ~VisualOdometryStereo ();
   
   // process a new images, push the images back to an internal ring buffer.
   // valid motion estimates are available after calling process for two times.
@@ -62,14 +62,21 @@ public:
   // output: returns false if an error occured
   bool process (uint8_t *I1,uint8_t *I2,int32_t* dims,bool replace=false);
 
+  const std::vector<Matcher::p_match> getRawMatches() const {
+    return matcher->getRawMatches();
+  }
+
   using VisualOdometry::process;
 
-
+  // Note: made public for experimental DynSLAM purposes.
+  // The method uses RANSAC to robustly fit a 6-DoF transform over 3 4-way matches. At every RANSAC
+  // iteration, 3 (curr-left, curr-right, prev-left, prev-right) tuples are sampled and the 6-DoF
+  // transform is fit using Gauss-Newton, minimising the sum of squared reprojection errors in the
+  // left and right current frames, of the 3D points triangulated from the previous frame.
+  std::vector<double>  estimateMotion(std::vector<Matcher::p_match> p_matched);
 
 private:
-
-  std::vector<double>  estimateMotion (std::vector<Matcher::p_match> p_matched);
-  enum                 result { UPDATED, FAILED, CONVERGED };  
+  enum                 result { UPDATED, FAILED, CONVERGED };
   result               updateParameters(std::vector<Matcher::p_match> &p_matched,std::vector<int32_t> &active,std::vector<double> &tr,double step_size,double eps);
   void                 computeObservations(std::vector<Matcher::p_match> &p_matched,std::vector<int32_t> &active);
   void                 computeResidualsAndJacobian(std::vector<double> &tr,std::vector<int32_t> &active);

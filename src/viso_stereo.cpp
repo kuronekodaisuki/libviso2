@@ -19,6 +19,7 @@ libviso2; if not, write to the Free Software Foundation, Inc., 51 Franklin
 Street, Fifth Floor, Boston, MA 02110-1301, USA 
 */
 
+#include <cassert>
 #include "viso_stereo.h"
 
 using namespace std;
@@ -34,13 +35,18 @@ bool VisualOdometryStereo::process (uint8_t *I1,uint8_t *I2,int32_t* dims,bool r
   
   // push back images
   matcher->pushBack(I1,I2,dims,replace);
-  
+
+//  dynslam::utils::Tic("VOS::process");
+
   // bootstrap motion estimate if invalid
-  if (~Tr_valid) {
+  Tr_valid = true;
+  if (!Tr_valid) {
+    printf("viso2 (%s): Tr was not valid; doing full feature match\n", __FILE__);
     matcher->matchFeatures(2);
     matcher->bucketFeatures(param.bucket.max_features,param.bucket.bucket_width,param.bucket.bucket_height);                          
     p_matched = matcher->getMatches();
     updateMotion();
+//    dynslam::utils::Toc();
   }
   
   // match features and update motion
@@ -48,10 +54,13 @@ bool VisualOdometryStereo::process (uint8_t *I1,uint8_t *I2,int32_t* dims,bool r
   else          matcher->matchFeatures(2);
   matcher->bucketFeatures(param.bucket.max_features,param.bucket.bucket_width,param.bucket.bucket_height);                          
   p_matched = matcher->getMatches();
-  return updateMotion();
+  bool updateOk = updateMotion();
+//  dynslam::utils::Toc();
+
+  return updateOk;
 }
 
-vector<double> VisualOdometryStereo::estimateMotion (vector<Matcher::p_match> p_matched) {
+vector<double> VisualOdometryStereo::estimateMotion(vector<Matcher::p_match> p_matched) {
   
   // return value
   bool success = true;
@@ -66,9 +75,14 @@ vector<double> VisualOdometryStereo::estimateMotion (vector<Matcher::p_match> p_
   
   // get number of matches
   int32_t N  = p_matched.size();
-  if (N<6)
+  if (N < 6) {
+//    cerr << "Insufficient matches between images: " << N << " instead of 6, the minimum required."
+//         << endl;
     return vector<double>();
+  }
 
+  // TODO-PERF(andrei): We can just pre-allocate these on init for some large enough N. If full-size
+  // matching is used, N can easily be ~350 => ~120kb. Ok, not too much.
   // allocate dynamic memory
   X          = new double[N];
   Y          = new double[N];
@@ -101,21 +115,27 @@ vector<double> VisualOdometryStereo::estimateMotion (vector<Matcher::p_match> p_
     vector<int32_t> active = getRandomSample(N,3);
 
     // clear parameter vector
-    for (int32_t i=0; i<6; i++)
+    for (int32_t i=0; i<6; i++) {
+      // TODO(andrei): warm start here
       tr_delta_curr[i] = 0;
+    }
 
-    // minimize reprojection errors
+    // minimize reprojection errors of the previous frame's keypoints onto the current frame
     VisualOdometryStereo::result result = UPDATED;
     int32_t iter=0;
     while (result==UPDATED) {
-      result = updateParameters(p_matched,active,tr_delta_curr,1,1e-6);
-      if (iter++ > 20 || result==CONVERGED)
+//      result = updateParameters(p_matched,active,tr_delta_curr,1,1e-6);
+      result = updateParameters(p_matched, active, tr_delta_curr, 0.5, 1e-6);
+
+      if (iter++ > 20 || result==CONVERGED) {
+//        cout << "Break @ " << iter << " iterations in libviso motion estimation UPDATE." << endl;
         break;
+      }
     }
 
     // overwrite best parameters if we have more inliers
     if (result!=FAILED) {
-      vector<int32_t> inliers_curr = getInlier(p_matched,tr_delta_curr);
+      vector<int32_t> inliers_curr = getInlier(p_matched, tr_delta_curr);
       if (inliers_curr.size()>inliers.size()) {
         inliers = inliers_curr;
         tr_delta = tr_delta_curr;
@@ -128,9 +148,12 @@ vector<double> VisualOdometryStereo::estimateMotion (vector<Matcher::p_match> p_
     int32_t iter=0;
     VisualOdometryStereo::result result = UPDATED;
     while (result==UPDATED) {     
-      result = updateParameters(p_matched,inliers,tr_delta,1,1e-8);
-      if (iter++ > 100 || result==CONVERGED)
+//      result = updateParameters(p_matched,inliers,tr_delta, 1, 1e-8);
+      result = updateParameters(p_matched,inliers,tr_delta, 0.25, 1e-8);
+      if (iter++ > 250 || result==CONVERGED) {
+//        cout << "Break @ " << iter << " iterations in libviso motion estimation REFINEMENT." << endl;
         break;
+      }
     }
 
     // not converged
@@ -139,6 +162,7 @@ vector<double> VisualOdometryStereo::estimateMotion (vector<Matcher::p_match> p_
 
   // not enough inliers
   } else {
+    cerr << "Insufficient final inliers in viso! (" << inliers.size() << " < 6)" << endl;
     success = false;
   }
 
@@ -164,8 +188,8 @@ vector<int32_t> VisualOdometryStereo::getInlier(vector<Matcher::p_match> &p_matc
     active.push_back(i);
 
   // extract observations and compute predictions
-  computeObservations(p_matched,active);
-  computeResidualsAndJacobian(tr,active);
+  computeObservations(p_matched, active);
+  computeResidualsAndJacobian(tr, active);
 
   // compute inliers
   vector<int32_t> inliers;
@@ -187,32 +211,41 @@ VisualOdometryStereo::result VisualOdometryStereo::updateParameters(vector<Match
   computeResidualsAndJacobian(tr,active);
 
   // init
-  Matrix A(6,6);
-  Matrix B(6,1);
+  Matrix A(6,6); // = (J^T * J)
+  Matrix B(6,1); // = (J^T * r)
 
   // fill matrices A and B
   for (int32_t m=0; m<6; m++) {
     for (int32_t n=0; n<6; n++) {
       double a = 0;
       for (int32_t i=0; i<4*(int32_t)active.size(); i++) {
-        a += J[i*6+m]*J[i*6+n];
+        // i-th row and m-th column, i-th row and n-th column
+        a += J[i * 6 + m] * J[i * 6 + n];
       }
       A.val[m][n] = a;
     }
+
     double b = 0;
     for (int32_t i=0; i<4*(int32_t)active.size(); i++) {
-      b += J[i*6+m]*(p_residual[i]);
+      b += J[i * 6 + m] * (p_residual[i]);
     }
+
     B.val[m][0] = b;
   }
 
-  // perform elimination
+  // Instead of solving (inv(A) * B) it's much more efficient to solve Ax = B, since it doesn't
+  // involve inverting a matrix. Solving Ax = B solves
+  // In essence, this part computes the Gauss-Newton parameter update.
+  // perform elimination Ax = B (stores result in B)
   if (B.solve(A)) {
     bool converged = true;
     for (int32_t m=0; m<6; m++) {
-      tr[m] += step_size*B.val[m][0];
-      if (fabs(B.val[m][0])>eps)
+      // Update each parameter of the transform
+      tr[m] += step_size * B.val[m][0];
+
+      if (fabs(B.val[m][0])>eps) {
         converged = false;
+      }
     }
     if (converged)
       return CONVERGED;
@@ -248,11 +281,14 @@ void VisualOdometryStereo::computeResidualsAndJacobian(vector<double> &tr,vector
   double r00    = +cy*cz;          double r01    = -cy*sz;          double r02    = +sy;
   double r10    = +sx*sy*cz+cx*sz; double r11    = -sx*sy*sz+cx*cz; double r12    = -sx*cy;
   double r20    = -cx*sy*cz+sx*sz; double r21    = +cx*sy*sz+sx*cz; double r22    = +cx*cy;
+
   double rdrx10 = +cx*sy*cz-sx*sz; double rdrx11 = -cx*sy*sz-sx*cz; double rdrx12 = -cx*cy;
   double rdrx20 = +sx*sy*cz+cx*sz; double rdrx21 = -sx*sy*sz+cx*cz; double rdrx22 = -sx*cy;
+
   double rdry00 = -sy*cz;          double rdry01 = +sy*sz;          double rdry02 = +cy;
   double rdry10 = +sx*cy*cz;       double rdry11 = -sx*cy*sz;       double rdry12 = +sx*sy;
   double rdry20 = -cx*cy*cz;       double rdry21 = +cx*cy*sz;       double rdry22 = -cx*sy;
+
   double rdrz00 = -cy*sz;          double rdrz01 = -cy*cz;
   double rdrz10 = -sx*sy*sz+cx*cz; double rdrz11 = -sx*sy*cz-cx*sz;
   double rdrz20 = +cx*sy*sz+sx*cz; double rdrz21 = +cx*sy*cz-sx*sz;
@@ -276,6 +312,8 @@ void VisualOdometryStereo::computeResidualsAndJacobian(vector<double> &tr,vector
     Z1c = r20*X1p+r21*Y1p+r22*Z1p+tz;
     
     // weighting
+    // (Lower weights towards the edges of the image; meant to increase robustness to
+    //  calibration errors.)
     double weight = 1.0;
     if (param.reweighting)
       weight = 1.0/(fabs(p_observe[4*i+0]-param.calib.cu)/fabs(param.calib.cu) + 0.05);
@@ -283,46 +321,67 @@ void VisualOdometryStereo::computeResidualsAndJacobian(vector<double> &tr,vector
     // compute 3d point in current right coordinate system
     X2c = X1c-param.base;
 
-    // for all paramters do
-    for (int32_t j=0; j<6; j++) {
-
+    // for all parameters do
+    for (int32_t j = 0; j < 6; j++) {
       // derivatives of 3d pt. in curr. left coordinates wrt. param j
+      // We're optimizing the pose (6 elements: 3 rot, 3 trans), so we want the derivative of the
+      // 3D point wrt each of these 6 parameters.
       switch (j) {
-        case 0: X1cd = 0;
-                Y1cd = rdrx10*X1p+rdrx11*Y1p+rdrx12*Z1p;
-                Z1cd = rdrx20*X1p+rdrx21*Y1p+rdrx22*Z1p;
-                break;
-        case 1: X1cd = rdry00*X1p+rdry01*Y1p+rdry02*Z1p;
-                Y1cd = rdry10*X1p+rdry11*Y1p+rdry12*Z1p;
-                Z1cd = rdry20*X1p+rdry21*Y1p+rdry22*Z1p;
-                break;
-        case 2: X1cd = rdrz00*X1p+rdrz01*Y1p;
-                Y1cd = rdrz10*X1p+rdrz11*Y1p;
-                Z1cd = rdrz20*X1p+rdrz21*Y1p;
-                break;
+        // derivative of the ith observation w.r.t., r_1
+        case 0:
+          X1cd = 0;
+          Y1cd = rdrx10 * X1p + rdrx11 * Y1p + rdrx12 * Z1p;
+          Z1cd = rdrx20 * X1p + rdrx21 * Y1p + rdrx22 * Z1p;
+          break;
+          // derivative w.r.t., r_2
+        case 1:
+          X1cd = rdry00 * X1p + rdry01 * Y1p + rdry02 * Z1p;
+          Y1cd = rdry10 * X1p + rdry11 * Y1p + rdry12 * Z1p;
+          Z1cd = rdry20 * X1p + rdry21 * Y1p + rdry22 * Z1p;
+          break;
+          // derivative w.r.t., r_3
+        case 2:
+          X1cd = rdrz00 * X1p + rdrz01 * Y1p;
+          Y1cd = rdrz10 * X1p + rdrz11 * Y1p;
+          Z1cd = rdrz20 * X1p + rdrz21 * Y1p;
+          break;
+        // derivative w.r.t., t_1
         case 3: X1cd = 1; Y1cd = 0; Z1cd = 0; break;
+        // derivative w.r.t., t_2
         case 4: X1cd = 0; Y1cd = 1; Z1cd = 0; break;
+        // derivative w.r.t., t_3
         case 5: X1cd = 0; Y1cd = 0; Z1cd = 1; break;
+        default:
+          assert("Invalid parameter ID. Only 0..5 supported.");
+          return;   // Makes the data flow analysis not complain.
       }
 
       // set jacobian entries (project via K)
-      J[(4*i+0)*6+j] = weight*param.calib.f*(X1cd*Z1c-X1c*Z1cd)/(Z1c*Z1c); // left u'
-      J[(4*i+1)*6+j] = weight*param.calib.f*(Y1cd*Z1c-Y1c*Z1cd)/(Z1c*Z1c); // left v'
-      J[(4*i+2)*6+j] = weight*param.calib.f*(X1cd*Z1c-X2c*Z1cd)/(Z1c*Z1c); // right u'
-      J[(4*i+3)*6+j] = weight*param.calib.f*(Y1cd*Z1c-Y1c*Z1cd)/(Z1c*Z1c); // right v'
+      // (Each observation has four components: the left-u, left-v, right-u, right-v, and each
+      //  gradient has 6 elements, since our pose has 6 parameters; therefore, each observation
+      //  leads to 6 * 4 = 24 elements in the Jacobian.)
+      // left u'
+      J[(4 * i + 0) * 6 + j] = weight * param.calib.f * (X1cd * Z1c - X1c * Z1cd) / (Z1c * Z1c);
+      // left v'
+      J[(4 * i + 1) * 6 + j] = weight * param.calib.f * (Y1cd * Z1c - Y1c * Z1cd) / (Z1c * Z1c);
+      // right u'
+      J[(4 * i + 2) * 6 + j] = weight * param.calib.f * (X1cd * Z1c - X2c * Z1cd) / (Z1c * Z1c);
+      // right v'
+      J[(4 * i + 3) * 6 + j] = weight * param.calib.f * (Y1cd * Z1c - Y1c * Z1cd) / (Z1c * Z1c);
     }
 
     // set prediction (project via K)
-    p_predict[4*i+0] = param.calib.f*X1c/Z1c+param.calib.cu; // left u
-    p_predict[4*i+1] = param.calib.f*Y1c/Z1c+param.calib.cv; // left v
-    p_predict[4*i+2] = param.calib.f*X2c/Z1c+param.calib.cu; // right u
-    p_predict[4*i+3] = param.calib.f*Y1c/Z1c+param.calib.cv; // right v
-    
+    // No derivatives involved here: this is just the standard K * dehomog(X)
+    p_predict[4 * i + 0] = param.calib.f * X1c / Z1c + param.calib.cu; // left u
+    p_predict[4 * i + 1] = param.calib.f * Y1c / Z1c + param.calib.cv; // left v
+    p_predict[4 * i + 2] = param.calib.f * X2c / Z1c + param.calib.cu; // right u
+    p_predict[4 * i + 3] = param.calib.f * Y1c / Z1c + param.calib.cv; // right v
+
     // set residuals
-    p_residual[4*i+0] = weight*(p_observe[4*i+0]-p_predict[4*i+0]);
-    p_residual[4*i+1] = weight*(p_observe[4*i+1]-p_predict[4*i+1]);
-    p_residual[4*i+2] = weight*(p_observe[4*i+2]-p_predict[4*i+2]);
-    p_residual[4*i+3] = weight*(p_observe[4*i+3]-p_predict[4*i+3]);
+    p_residual[4 * i + 0] = weight * (p_observe[4 * i + 0] - p_predict[4 * i + 0]);
+    p_residual[4 * i + 1] = weight * (p_observe[4 * i + 1] - p_predict[4 * i + 1]);
+    p_residual[4 * i + 2] = weight * (p_observe[4 * i + 2] - p_predict[4 * i + 2]);
+    p_residual[4 * i + 3] = weight * (p_observe[4 * i + 3] - p_predict[4 * i + 3]);
   }
 }
 

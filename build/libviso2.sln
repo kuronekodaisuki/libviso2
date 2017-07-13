@@ -1,49 +1,19 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_with_opencv", "demo_with_opencv\demo_with_opencv.vcxproj", "{3B930B65-D3E7-4284-A71A-944E5008D824}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_SDL_OpenCV", "..\demo_SDL_OpenCV\demo_SDL_OpenCV.vcxproj", "{A05C7C77-089B-4C98-90BF-2262FE840790}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Capture", "Capture\Capture.vcxproj", "{C50946B0-230F-4698-BA35-867C1E61228C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebCamTest", "WebCamTest\WebCamTest.vcxproj", "{79F9C937-9AC4-4FFD-88E8-73B55F84674F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_USB_camera", "..\demo_USB_camera\demo_USB_camera.vcxproj", "{4FB17255-413A-48F8-95ED-BD696E9E0E46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
-		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3B930B65-D3E7-4284-A71A-944E5008D824}.Debug|Win32.ActiveCfg = Debug|x64
-		{3B930B65-D3E7-4284-A71A-944E5008D824}.Debug|x64.ActiveCfg = Debug|x64
-		{3B930B65-D3E7-4284-A71A-944E5008D824}.Debug|x64.Build.0 = Debug|x64
-		{3B930B65-D3E7-4284-A71A-944E5008D824}.Release|Win32.ActiveCfg = Release|x64
-		{3B930B65-D3E7-4284-A71A-944E5008D824}.Release|x64.ActiveCfg = Release|x64
-		{3B930B65-D3E7-4284-A71A-944E5008D824}.Release|x64.Build.0 = Release|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|Win32.ActiveCfg = Debug|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.ActiveCfg = Debug|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.Build.0 = Debug|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|Win32.ActiveCfg = Release|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.ActiveCfg = Release|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.Build.0 = Release|x64
-		{C50946B0-230F-4698-BA35-867C1E61228C}.Debug|Win32.ActiveCfg = Debug|x64
-		{C50946B0-230F-4698-BA35-867C1E61228C}.Debug|x64.ActiveCfg = Debug|x64
-		{C50946B0-230F-4698-BA35-867C1E61228C}.Debug|x64.Build.0 = Debug|x64
-		{C50946B0-230F-4698-BA35-867C1E61228C}.Release|Win32.ActiveCfg = Release|x64
-		{C50946B0-230F-4698-BA35-867C1E61228C}.Release|x64.ActiveCfg = Release|x64
-		{C50946B0-230F-4698-BA35-867C1E61228C}.Release|x64.Build.0 = Release|x64
-		{79F9C937-9AC4-4FFD-88E8-73B55F84674F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{79F9C937-9AC4-4FFD-88E8-73B55F84674F}.Debug|Win32.Build.0 = Debug|Win32
-		{79F9C937-9AC4-4FFD-88E8-73B55F84674F}.Debug|x64.ActiveCfg = Debug|x64
-		{79F9C937-9AC4-4FFD-88E8-73B55F84674F}.Debug|x64.Build.0 = Debug|x64
-		{79F9C937-9AC4-4FFD-88E8-73B55F84674F}.Release|Win32.ActiveCfg = Release|Win32
-		{79F9C937-9AC4-4FFD-88E8-73B55F84674F}.Release|Win32.Build.0 = Release|Win32
-		{79F9C937-9AC4-4FFD-88E8-73B55F84674F}.Release|x64.ActiveCfg = Release|x64
-		{79F9C937-9AC4-4FFD-88E8-73B55F84674F}.Release|x64.Build.0 = Release|x64
+		{4FB17255-413A-48F8-95ED-BD696E9E0E46}.Debug|x64.ActiveCfg = Debug|x64
+		{4FB17255-413A-48F8-95ED-BD696E9E0E46}.Debug|x64.Build.0 = Debug|x64
+		{4FB17255-413A-48F8-95ED-BD696E9E0E46}.Release|x64.ActiveCfg = Release|x64
+		{4FB17255-413A-48F8-95ED-BD696E9E0E46}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
