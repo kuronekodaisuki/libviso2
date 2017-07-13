@@ -2,9 +2,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <OVRVISION_DIR>..\..\3rdparty\OvrvisionPro</OVRVISION_DIR>
+    <OVRVISION_DIR>..\3rdparty\OvrvisionPro</OVRVISION_DIR>
   </PropertyGroup>
-  <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(OVRVISION_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

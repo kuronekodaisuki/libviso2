@@ -37,10 +37,13 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 #include <viso_stereo.h>
 
+#pragma warning(push)
+#pragma warning(disable: 4819)
 #include <opencv2\core.hpp>
 #include <opencv2\imgcodecs.hpp>
 #include <opencv2\imgproc.hpp>
 #include <opencv2/highgui.hpp>
+#pragma warning(pop)
 
 using namespace std;
 

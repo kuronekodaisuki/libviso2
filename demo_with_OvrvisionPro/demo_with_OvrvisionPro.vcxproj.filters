@@ -24,28 +24,28 @@
     <ClInclude Include="targetver.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\filter.h">
+    <ClInclude Include="..\src\filter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\matcher.h">
+    <ClInclude Include="..\src\matcher.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\matrix.h">
+    <ClInclude Include="..\src\matrix.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\reconstruction.h">
+    <ClInclude Include="..\src\reconstruction.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\timer.h">
+    <ClInclude Include="..\src\timer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\triangle.h">
+    <ClInclude Include="..\src\triangle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\viso.h">
+    <ClInclude Include="..\src\viso.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\viso_stereo.h">
+    <ClInclude Include="..\src\viso_stereo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,25 +56,25 @@
     <ClCompile Include="demo_with_OvrvisionPro.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\filter.cpp">
+    <ClCompile Include="..\src\filter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\matcher.cpp">
+    <ClCompile Include="..\src\matcher.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\matrix.cpp">
+    <ClCompile Include="..\src\matrix.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\reconstruction.cpp">
+    <ClCompile Include="..\src\reconstruction.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\triangle.cpp">
+    <ClCompile Include="..\src\triangle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\viso.cpp">
+    <ClCompile Include="..\src\viso.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\viso_stereo.cpp">
+    <ClCompile Include="..\src\viso_stereo.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
