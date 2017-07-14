@@ -2,6 +2,11 @@
 //
 
 #include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <vector>
+#include <stdint.h>
+
 // libviso2
 #include <viso_stereo.h>　
 
@@ -42,11 +47,14 @@ int main()
 
 	cv::Mat l, r;
 	cv::Mat left, right;
-	left.create(IMAGE_HEIGHT, IMAGE_WIDTH, CV_8UC1);
-	right.create(IMAGE_HEIGHT, IMAGE_WIDTH, CV_8UC1);
-	int bypePerLine = left.step;
 
-	for (bool loop = true; loop; )
+	int i = 0;
+	int interval = 30;
+
+	bool stereo = false;
+	bool write = false;
+
+	for (bool loop = true; loop; i++)
 	{
 		// カメラからキャプチャー
 		camLeft.grab(); // 左右のカメラをソフト的に同期させる
@@ -61,24 +69,76 @@ int main()
 		cv::imshow("Left", left);
 		cv::imshow("Right", right);
 
-		int32_t dims[] = { IMAGE_WIDTH, IMAGE_HEIGHT, bypePerLine };
-		if (viso.process(left.data, right.data, dims))
+		int width = left.cols;
+		int height = left.rows;
+		int bypePerLine = left.step;
+
+		switch (cv::waitKey(interval))
 		{
-			// 移動行列を更新
-			pose = pose * Matrix::inv(viso.getMotion());
-
-			// output some statistics
-			double num_matches = viso.getNumberOfMatches();
-			double num_inliers = viso.getNumberOfInliers();
-
-			// poseの情報を表示
-			std::cout << ", Matches: " << num_matches;
-			std::cout << ", Inliers: " << 100.0*num_inliers / num_matches << " %" << ", Current pose: " << std::endl;
-			std::cout << pose << std::endl;
-		}
-
-		if (cv::waitKey(30) == 'q')
+		case 'q':
 			loop = false;    // 終了
+			break;
+
+		case 's':
+			stereo = !stereo;
+			break;
+
+		case 'c':
+			write = !write;
+			break;
+		case 0x250000:
+			//OutputDebugString("←\n");
+			break;
+
+		case 0x260000:
+			//OutputDebugStringA("↑\n");
+			interval += 5;
+			break;
+
+		case 0x270000:
+			//OutputDebugStringA("→\n");
+			break;
+
+		case 0x280000:
+			//OutputDebugStringA("↓\n");
+			if (10 < interval)
+				interval -= 5;
+			break;
+		}
+		if (write)
+		{
+			char left_name[_MAX_PATH], right_name[_MAX_PATH];
+			sprintf(left_name, "I1_%06d.jpg", i);
+			sprintf(right_name, "I2_%06d.jpg", i);
+
+			cv::imwrite(left_name, l);
+			cv::imwrite(right_name, r);
+		}
+		if (stereo)
+		{
+			// status
+			std::cout << "Processing: Frame: " << i;
+
+			int32_t dims[] = { width, height, bypePerLine };
+			if (viso.process(left.data, right.data, dims))
+			{
+				// 移動行列を更新
+				pose = pose * Matrix::inv(viso.getMotion());
+
+				// output some statistics
+				double num_matches = viso.getNumberOfMatches();
+				double num_inliers = viso.getNumberOfInliers();
+
+				// poseの情報を表示
+				std::cout << ", Matches: " << num_matches;
+				std::cout << ", Inliers: " << 100.0*num_inliers / num_matches << " %" << ", Current pose: " << std::endl;
+				std::cout << pose << std::endl;
+			}
+			else 
+			{
+				std::cout << " ... failed!" << std::endl;
+			}
+		}
 	}
 	return 0;
 }
