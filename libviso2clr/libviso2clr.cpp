@@ -18,6 +18,8 @@ namespace libviso2clr {
 	{
 		if (viso != nullptr) 
 			delete viso;
+		if (pose != nullptr)
+			delete pose;
 	}
 
 	bool Stereo::init(double base_line, double cu, double cv, double focus)
@@ -53,6 +55,13 @@ namespace libviso2clr {
 
 		Marshal::FreeHGlobal(pLeft);
 		Marshal::FreeHGlobal(pRight);
+		return result;
+	}
+
+	Pose Stereo::getPose()
+	{
+		Pose result;
+		//result[0][0] = pose->getData();
 		return result;
 	}
 }

@@ -9,6 +9,11 @@ using namespace System;
 
 namespace libviso2clr {
 
+	public class Pose
+	{
+		float matrix[4][4];
+	};
+
 	public ref class Stereo
 	{
 	public:
@@ -34,9 +39,10 @@ namespace libviso2clr {
 		 */
 		bool process(String ^left, String ^right);
 
+		Pose getPose();
+
 	private:
 		VisualOdometryStereo *viso;
-		Matrix *pose;
-		
+		Matrix *pose;		
 	};
 }
