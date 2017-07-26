@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_with_OvrvisionPro", ".
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libviso2clr", "..\libviso2clr\libviso2clr.vcxproj", "{12F9C08D-C0F8-4BB9-9F5F-A41688A0D647}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_SDL_OpenCV", "..\demo_SDL_OpenCV\demo_SDL_OpenCV.vcxproj", "{A05C7C77-089B-4C98-90BF-2262FE840790}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -26,6 +28,10 @@ Global
 		{12F9C08D-C0F8-4BB9-9F5F-A41688A0D647}.Debug|x64.Build.0 = Debug|x64
 		{12F9C08D-C0F8-4BB9-9F5F-A41688A0D647}.Release|x64.ActiveCfg = Release|x64
 		{12F9C08D-C0F8-4BB9-9F5F-A41688A0D647}.Release|x64.Build.0 = Release|x64
+		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.ActiveCfg = Debug|x64
+		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.Build.0 = Debug|x64
+		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.ActiveCfg = Release|x64
+		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
