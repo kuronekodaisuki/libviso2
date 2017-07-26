@@ -8,13 +8,16 @@
 #include <stdint.h>
 
 // libviso2
-#include <viso_stereo.h>　
+#include <viso_stereo.h>
 
 // 画像ファイルのアクセスにOpenCVを使います
+#pragma warning(push)
+#pragma warning(disable: 4819)
 #include <opencv2\core.hpp>
 #include <opencv2\imgcodecs.hpp>
 #include <opencv2\imgproc.hpp>
 #include <opencv2/highgui.hpp>
+#pragma warning(pop)
 
 #define IMAGE_WIDTH 640
 #define IMAGE_HEIGHT 480
