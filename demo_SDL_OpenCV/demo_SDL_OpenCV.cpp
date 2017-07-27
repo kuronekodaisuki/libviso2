@@ -13,6 +13,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 #pragma warning(pop)
 
 #include "VisualOdometryApp.h"
@@ -25,8 +26,8 @@ static const Uint32 WINDOW_HEIGHT = 768;
 static const Uint32 WINDOW_BPP = 32;
 static const Uint32 FPS = 60;
 
-#define	NUMBER_OF_FRAME	373
-static float scale = 0.5;
+#define	NUMBER_OF_FRAME	8000
+static float scale = 0.05;
 
 #ifdef __cplusplus
 extern "C"
@@ -46,9 +47,9 @@ int main(int argc, char* argv[])
 
 		// calibration parameters for sequence 2010_03_09_drive_0019 
 		param.calib.f = 645.24; // focal length in pixels
-		param.calib.cu = 635.96; // principal point (u-coordinate) in pixels
-		param.calib.cv = 194.13; // principal point (v-coordinate) in pixels
-		param.base = 0.5707; // baseline in meters
+		param.calib.cu = 320; // principal point (u-coordinate) in pixels
+		param.calib.cv = 240; // principal point (v-coordinate) in pixels
+		param.base = 0.3707; // baseline in meters
 
 		// init visual odometry
 		VisualOdometryStereo viso(param);
@@ -58,13 +59,15 @@ int main(int argc, char* argv[])
 		Matrix pose = Matrix::eye(4);
 
 		// loop through all frames i=0:372
-		int32_t i = 0;
+		int32_t i = 0, n = NUMBER_OF_FRAME;
 		if (3 <= argc)
 		{
 			i = atoi(argv[2]);
+			if (4 <= argc)
+				n = atoi(argv[3]);
 		}
 
-		for (; i < NUMBER_OF_FRAME; i++) { // 373
+		for (; i < n; i++) { // 373
 
 			// input file names
 			char base_name[256]; sprintf(base_name, "%06d.jpg", i);
@@ -81,6 +84,12 @@ int main(int argc, char* argv[])
 				int32_t width = left.cols;
 				int32_t height = left.rows;
 				int32_t bytePerLine = left.step;
+
+				if (height == 0 || width == 0 || bytePerLine == 0)
+					continue;
+
+				cv::imshow("LEFT", left);
+				cv::imshow("RIGHT", right);
 
 				uint8_t *left_img_data = left.data;
 				uint8_t *right_img_data = right.data;
