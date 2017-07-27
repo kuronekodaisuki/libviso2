@@ -270,6 +270,16 @@ bool VisualOdometryApp::mouseMove(int32_t x, int32_t y, int32_t dx, int32_t dy, 
 	return true;
 }
 
+bool VisualOdometryApp::mouseButton(int32_t x, int32_t y, MOUSE_BUTTON button)
+{
+	return true;
+}
+
+bool VisualOdometryApp::mouseWheel(int32_t x, int32_t y)
+{
+	return true;
+}
+
 void VisualOdometryApp::resize(uint32_t width, uint32_t height)
 {
 	cout << "GL Viewport size: " << width << " x " << height << endl;
