@@ -58,10 +58,16 @@ int main(int argc, char* argv[])
 		Matrix pose = Matrix::eye(4);
 
 		// loop through all frames i=0:372
-		for (int32_t i = 0; i < NUMBER_OF_FRAME; i++) { // 373
+		int32_t i = 0;
+		if (3 <= argc)
+		{
+			i = atoi(argv[2]);
+		}
+
+		for (; i < NUMBER_OF_FRAME; i++) { // 373
 
 			// input file names
-			char base_name[256]; sprintf(base_name, "%06d.png", i);
+			char base_name[256]; sprintf(base_name, "%06d.jpg", i);
 			string left_img_file_name = dir + "/I1_" + base_name;
 			string right_img_file_name = dir + "/I2_" + base_name;
 
@@ -80,7 +86,8 @@ int main(int argc, char* argv[])
 				uint8_t *right_img_data = right.data;
 
 				// status
-				cout << i;
+				// status
+				std::cout << "Processing: Frame: " << i;
 
 				// compute visual odometry
 				int32_t dims[] = { width, height, bytePerLine };
@@ -92,9 +99,10 @@ int main(int argc, char* argv[])
 					// output some statistics
 					double num_matches = viso.getNumberOfMatches();
 					double num_inliers = viso.getNumberOfInliers();
-					cout << ", " << num_matches;
-					cout << ", " << 100.0*num_inliers / num_matches << ", ";
-					cout << pose << endl;
+					// pose‚Ìî•ñ‚ð•\Ž¦
+					std::cout << ", Matches: " << num_matches;
+					std::cout << ", Inliers: " << 100.0*num_inliers / num_matches << " %" << ", Current pose: " << std::endl;
+					std::cout << pose << std::endl;
 
 					app.addCamera(pose, scale, true);
 				}
