@@ -67,8 +67,8 @@ int main(int argc, char* argv[])
 				n = atoi(argv[3]);
 		}
 
-		for (; i < n; i++) { // 373
-
+		for (; i < n; i += 5) 
+		{ 
 			// input file names
 			char base_name[256]; sprintf(base_name, "%06d.jpg", i);
 			string left_img_file_name = dir + "/I1_" + base_name;
@@ -114,6 +114,17 @@ int main(int argc, char* argv[])
 					std::cout << pose << std::endl;
 
 					app.addCamera(pose, scale, true);
+
+					std::vector<Matcher::p_match> matched = viso.getMatches();
+					std::vector<int> indices = viso.getInlierIndices();
+					for (size_t i = 0; i < matched.size(); i++)
+					{
+						std::cout << matched[i].u1c << ", " << matched[i].v1c << std::endl;
+						cv::line(left, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(255));
+						cv::line(right, cv::Point(matched[i].u2c, matched[i].v2c), cv::Point(matched[i].u2p, matched[i].v2p), cv::Scalar(255));
+					}
+					cv::imshow("LEFT", left);
+					cv::imshow("RIGHT", right);
 				}
 				else {
 					cout << " ... failed!" << endl;
