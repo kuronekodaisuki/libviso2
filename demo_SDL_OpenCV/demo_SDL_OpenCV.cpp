@@ -46,10 +46,12 @@ int main(int argc, char* argv[])
 		VisualOdometryStereo::parameters param;
 
 		// calibration parameters for sequence 2010_03_09_drive_0019 
-		param.calib.f = 645.24; // focal length in pixels
+		param.calib.f = 500; // 645.24; // focal length in pixels
 		param.calib.cu = 320; // principal point (u-coordinate) in pixels
 		param.calib.cv = 240; // principal point (v-coordinate) in pixels
 		param.base = 0.3707; // baseline in meters
+		//param.inlier_threshold = 2.0;	// inlier threshold
+		//param.ransac_iters = 500;
 
 		// init visual odometry
 		VisualOdometryStereo viso(param);
@@ -59,15 +61,17 @@ int main(int argc, char* argv[])
 		Matrix pose = Matrix::eye(4);
 
 		// loop through all frames i=0:372
-		int32_t i = 0, n = NUMBER_OF_FRAME;
+		int32_t i = 0, n = NUMBER_OF_FRAME, step = 10;
 		if (3 <= argc)
 		{
 			i = atoi(argv[2]);
 			if (4 <= argc)
 				n = atoi(argv[3]);
+			if (5 <= argc)
+				step = atoi(argv[4]);
 		}
 
-		for (; i < n; i += 10) 
+		for (; i <= n; i += step) 
 		{ 
 			// input file names
 			char base_name[256]; sprintf(base_name, "%06d.jpg", i);
@@ -117,14 +121,21 @@ int main(int argc, char* argv[])
 
 					app.addCamera(pose, scale, true);
 
-					cv:cvtColor(left, LEFT, cv::COLOR_GRAY2BGR);
-					//cv:cvtColor(right, RIGHT, cv::COLOR_GRAY2BGR);
+					cvtColor(left, LEFT, cv::COLOR_GRAY2BGR);
+					cvtColor(right, RIGHT, cv::COLOR_GRAY2BGR);
 
 					std::vector<Matcher::p_match> matched = viso.getMatches();
 					std::vector<int> indices = viso.getInlierIndices();
 					for (size_t i = 0; i < matched.size(); i++)
 					{
 						std::cout << matched[i].u1c << ", " << matched[i].v1c << std::endl;
+						cv::line(LEFT, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(255, 0, 0), 2);
+						cv::line(RIGHT, cv::Point(matched[i].u2c, matched[i].v2c), cv::Point(matched[i].u2p, matched[i].v2p), cv::Scalar(255, 0, 0), 2);
+					}
+					for (size_t idx = 0; idx < indices.size(); idx++)
+					{
+						int i = indices[idx];
+						std::cout << matched[i].u1c << ", " << matched[i].v1c << " *" << std::endl;
 						cv::line(LEFT, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(0, 0, 255), 2);
 						cv::line(RIGHT, cv::Point(matched[i].u2c, matched[i].v2c), cv::Point(matched[i].u2p, matched[i].v2p), cv::Scalar(0, 0, 255), 2);
 					}
