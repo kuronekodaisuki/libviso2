@@ -64,9 +64,9 @@ int main(int argc, char* argv[])
 		int32_t i = 0, n = NUMBER_OF_FRAME, step = 10;
 		if (3 <= argc)
 		{
-			i = atoi(argv[2]);
+			i = atol(argv[2]);
 			if (4 <= argc)
-				n = atoi(argv[3]);
+				n = atol(argv[3]);
 			if (5 <= argc)
 				step = atoi(argv[4]);
 		}
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
 					double num_inliers = viso.getNumberOfInliers();
 					// pose‚Ìî•ñ‚ð•\Ž¦
 					std::cout << ", Matches: " << num_matches;
-					std::cout << ", Inliers: " << 100.0*num_inliers / num_matches << " %" << ", Current pose: " << std::endl;
+					std::cout << ", Inliers: " << 100.0*num_inliers / num_matches << " %" << std::endl;
 					std::cout << pose << std::endl;
 
 					app.addCamera(pose, scale, true);
@@ -128,19 +128,20 @@ int main(int argc, char* argv[])
 					std::vector<int> indices = viso.getInlierIndices();
 					for (size_t i = 0; i < matched.size(); i++)
 					{
-						std::cout << matched[i].u1c << ", " << matched[i].v1c << std::endl;
+						//std::cout << matched[i].u1c << ", " << matched[i].v1c << std::endl;
 						cv::line(LEFT, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(255, 0, 0), 2);
 						cv::line(RIGHT, cv::Point(matched[i].u2c, matched[i].v2c), cv::Point(matched[i].u2p, matched[i].v2p), cv::Scalar(255, 0, 0), 2);
 					}
 					for (size_t idx = 0; idx < indices.size(); idx++)
 					{
 						int i = indices[idx];
-						std::cout << matched[i].u1c << ", " << matched[i].v1c << " *" << std::endl;
+						//std::cout << matched[i].u1c << ", " << matched[i].v1c << " *" << std::endl;
 						cv::line(LEFT, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(0, 0, 255), 2);
 						cv::line(RIGHT, cv::Point(matched[i].u2c, matched[i].v2c), cv::Point(matched[i].u2p, matched[i].v2p), cv::Scalar(0, 0, 255), 2);
 					}
 					cv::imshow("LEFT", LEFT);
 					cv::imshow("RIGHT", RIGHT);
+					cv::imwrite(base_name, LEFT);
 				}
 				else {
 					cout << " ... failed!" << endl;
