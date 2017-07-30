@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 				n = atoi(argv[3]);
 		}
 
-		for (; i < n; i += 5) 
+		for (; i < n; i += 10) 
 		{ 
 			// input file names
 			char base_name[256]; sprintf(base_name, "%06d.jpg", i);
@@ -80,6 +80,8 @@ int main(int argc, char* argv[])
 				// load left and right input image
 				cv::Mat left = cv::imread(left_img_file_name, cv::IMREAD_GRAYSCALE);
 				cv::Mat right = cv::imread(right_img_file_name, cv::IMREAD_GRAYSCALE);
+				cv::Mat	LEFT(left.rows, left.cols, CV_8UC3);
+				cv::Mat	RIGHT(right.rows, right.cols, CV_8UC3);
 
 				int32_t width = left.cols;
 				int32_t height = left.rows;
@@ -88,8 +90,8 @@ int main(int argc, char* argv[])
 				if (height == 0 || width == 0 || bytePerLine == 0)
 					continue;
 
-				cv::imshow("LEFT", left);
-				cv::imshow("RIGHT", right);
+				//cv::imshow("LEFT", left);
+				//cv::imshow("RIGHT", right);
 
 				uint8_t *left_img_data = left.data;
 				uint8_t *right_img_data = right.data;
@@ -115,16 +117,19 @@ int main(int argc, char* argv[])
 
 					app.addCamera(pose, scale, true);
 
+					cv:cvtColor(left, LEFT, cv::COLOR_GRAY2BGR);
+					//cv:cvtColor(right, RIGHT, cv::COLOR_GRAY2BGR);
+
 					std::vector<Matcher::p_match> matched = viso.getMatches();
 					std::vector<int> indices = viso.getInlierIndices();
 					for (size_t i = 0; i < matched.size(); i++)
 					{
 						std::cout << matched[i].u1c << ", " << matched[i].v1c << std::endl;
-						cv::line(left, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(255));
-						cv::line(right, cv::Point(matched[i].u2c, matched[i].v2c), cv::Point(matched[i].u2p, matched[i].v2p), cv::Scalar(255));
+						cv::line(LEFT, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(0, 0, 255), 2);
+						cv::line(RIGHT, cv::Point(matched[i].u2c, matched[i].v2c), cv::Point(matched[i].u2p, matched[i].v2p), cv::Scalar(0, 0, 255), 2);
 					}
-					cv::imshow("LEFT", left);
-					cv::imshow("RIGHT", right);
+					cv::imshow("LEFT", LEFT);
+					cv::imshow("RIGHT", RIGHT);
 				}
 				else {
 					cout << " ... failed!" << endl;
