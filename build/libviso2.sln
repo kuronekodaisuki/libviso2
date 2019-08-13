@@ -1,10 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_USB_camera", "..\demo_USB_camera\demo_USB_camera.vcxproj", "{4FB17255-413A-48F8-95ED-BD696E9E0E46}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_with_OvrvisionPro", "..\demo_with_OvrvisionPro\demo_with_OvrvisionPro.vcxproj", "{B098DBAE-3578-4AA2-8E68-4C2E99F9ABEA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_SDL_OpenCV", "..\demo_SDL_OpenCV\demo_SDL_OpenCV.vcxproj", "{A05C7C77-089B-4C98-90BF-2262FE840790}"
 EndProject
@@ -18,10 +16,6 @@ Global
 		{4FB17255-413A-48F8-95ED-BD696E9E0E46}.Debug|x64.Build.0 = Debug|x64
 		{4FB17255-413A-48F8-95ED-BD696E9E0E46}.Release|x64.ActiveCfg = Release|x64
 		{4FB17255-413A-48F8-95ED-BD696E9E0E46}.Release|x64.Build.0 = Release|x64
-		{B098DBAE-3578-4AA2-8E68-4C2E99F9ABEA}.Debug|x64.ActiveCfg = Debug|x64
-		{B098DBAE-3578-4AA2-8E68-4C2E99F9ABEA}.Debug|x64.Build.0 = Debug|x64
-		{B098DBAE-3578-4AA2-8E68-4C2E99F9ABEA}.Release|x64.ActiveCfg = Release|x64
-		{B098DBAE-3578-4AA2-8E68-4C2E99F9ABEA}.Release|x64.Build.0 = Release|x64
 		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.ActiveCfg = Debug|x64
 		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.Build.0 = Debug|x64
 		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.ActiveCfg = Release|x64
@@ -29,5 +23,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC93F34B-2BBB-4299-BEB5-42241C65E702}
 	EndGlobalSection
 EndGlobal

@@ -196,6 +196,8 @@
 /*                                                                           */
 /*****************************************************************************/
 
+#pragma warning(disable: 4996)
+
 /* Maximum number of characters in a file name (including the null).         */
 
 #define FILENAMESIZE 2048
