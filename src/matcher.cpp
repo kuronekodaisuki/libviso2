@@ -29,6 +29,8 @@ using namespace std;
 // PUBLIC FUNCTIONS //
 //////////////////////
 
+namespace VISO2
+{
 // constructor (with default parameters)
 Matcher::Matcher(parameters param) : param(param) {
 
@@ -1596,4 +1598,4 @@ float Matcher::mean(const uint8_t* I,const int32_t &bpl,const int32_t &u_min,con
   return
     mean /= (float)((u_max-u_min+1)*(v_max-v_min+1));
 }
-
+}
