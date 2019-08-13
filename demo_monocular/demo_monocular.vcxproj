@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{EE15B84F-07B4-4016-A958-78ABE8490523}</ProjectGuid>
+    <ProjectGuid>{CD6875F2-E99A-4271-BB1E-CCF945C2F849}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>demomonocular</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
@@ -38,12 +38,10 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\opencv.props" />
     <Import Project="..\opencv.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\opencv.props" />
     <Import Project="..\opencv.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -90,21 +88,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\filter.h" />
-    <ClInclude Include="..\..\src\matcher.h" />
-    <ClInclude Include="..\..\src\matrix.h" />
-    <ClInclude Include="..\..\src\triangle.h" />
-    <ClInclude Include="..\..\src\viso.h" />
-    <ClInclude Include="..\..\src\viso_mono.h" />
+    <ClInclude Include="..\src\filter.h" />
+    <ClInclude Include="..\src\matcher.h" />
+    <ClInclude Include="..\src\matrix.h" />
+    <ClInclude Include="..\src\triangle.h" />
+    <ClInclude Include="..\src\viso.h" />
+    <ClInclude Include="..\src\viso_mono.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\filter.cpp" />
-    <ClCompile Include="..\..\src\matcher.cpp" />
-    <ClCompile Include="..\..\src\matrix.cpp" />
-    <ClCompile Include="..\..\src\triangle.cpp" />
-    <ClCompile Include="..\..\src\viso.cpp" />
-    <ClCompile Include="..\..\src\viso_mono.cpp" />
+    <ClCompile Include="..\src\filter.cpp" />
+    <ClCompile Include="..\src\matcher.cpp" />
+    <ClCompile Include="..\src\matrix.cpp" />
+    <ClCompile Include="..\src\triangle.cpp" />
+    <ClCompile Include="..\src\viso.cpp" />
+    <ClCompile Include="..\src\viso_mono.cpp" />
     <ClCompile Include="demo_monocular.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
