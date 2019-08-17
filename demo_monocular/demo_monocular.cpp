@@ -51,12 +51,17 @@ int main(int argc, char *argv[])
 	if (2 <= argc && movie.open(argv[1]))
 	{
 		cv::Mat image, gray;
+		cv::VideoWriter writer;
+		bool write = false;
+		if (3 <= argc)
+		{
+			write = writer.open(argv[2], cv::VideoWriter::fourcc('M', 'P', '4', 'S'), 30, cv::Size(IMAGE_WIDTH, IMAGE_HEIGHT));
+		}
 
 		while (movie.grab())
 		{
 			movie.retrieve(image);
 			cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
-			//cv::imshow("image", image);
 
 			int width = gray.cols;
 			int height = gray.rows;
@@ -68,6 +73,17 @@ int main(int argc, char *argv[])
 				// 移動行列を更新
 				pose = pose * Matrix::inv(viso.getMotion());
 
+				if (write)
+				{
+					std::vector<Matcher::p_match> matched = viso.getMatches();
+					std::vector<int> indices = viso.getInlierIndices();
+					for (size_t idx = 0; idx < indices.size(); idx++)
+					{
+						int i = indices[idx];
+						cv::line(image, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(0, 0, 255), 2);
+					}
+					writer.write(image);
+				}
 				// output some statistics
 				double num_matches = viso.getNumberOfMatches();
 				double num_inliers = viso.getNumberOfInliers();
@@ -81,12 +97,9 @@ int main(int argc, char *argv[])
 				std::cout << values[3] << ", " << values[7] << ", " << values[11] << std::endl;
 			}
 		}
+		if (write)
+			writer.release();
 		movie.release();
-	}
-	else
-	{
-		DWORD error = GetLastError();
-		fprintf(stderr, "%d", error);
 	}
 }
 

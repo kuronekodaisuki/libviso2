@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_SDL_OpenCV", "..\demo_SDL_OpenCV\demo_SDL_OpenCV.vcxproj", "{A05C7C77-089B-4C98-90BF-2262FE840790}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "demo_monocular", "..\demo_monocular\demo_monocular.vcxproj", "{CD6875F2-E99A-4271-BB1E-CCF945C2F849}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libviso2_static", "..\libviso2_static\libviso2_static.vcxproj", "{F62EB976-57C8-450B-8AC9-4BD09EFFA22A}"
@@ -14,10 +12,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.ActiveCfg = Debug|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Debug|x64.Build.0 = Debug|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.ActiveCfg = Release|x64
-		{A05C7C77-089B-4C98-90BF-2262FE840790}.Release|x64.Build.0 = Release|x64
 		{CD6875F2-E99A-4271-BB1E-CCF945C2F849}.Debug|x64.ActiveCfg = Debug|x64
 		{CD6875F2-E99A-4271-BB1E-CCF945C2F849}.Debug|x64.Build.0 = Debug|x64
 		{CD6875F2-E99A-4271-BB1E-CCF945C2F849}.Release|x64.ActiveCfg = Release|x64
