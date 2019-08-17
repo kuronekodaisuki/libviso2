@@ -29,6 +29,9 @@ static const Uint32 FPS = 60;
 #define	NUMBER_OF_FRAME	8000
 static float scale = 0.05;
 
+using namespace VISO2;
+
+
 #ifdef __cplusplus
 extern "C"
 #endif

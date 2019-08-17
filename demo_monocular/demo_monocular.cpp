@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 		{
 			movie.retrieve(image);
 			cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
-			cv::imshow("image", image);
+			//cv::imshow("image", image);
 
 			int width = gray.cols;
 			int height = gray.rows;
@@ -71,11 +71,14 @@ int main(int argc, char *argv[])
 				// output some statistics
 				double num_matches = viso.getNumberOfMatches();
 				double num_inliers = viso.getNumberOfInliers();
+				VISO2::FLOAT values[16];
 
 				// poseの情報を表示
-				std::cout << ", Matches: " << num_matches;
-				std::cout << ", Inliers: " << 100.0*num_inliers / num_matches << " %" << ", Current pose: " << std::endl;
-				std::cout << pose << std::endl;
+				std::cout << "Matches: " << num_matches;
+				std::cout << ", Inliers: " << 100.0*num_inliers / num_matches << "%, ";
+				//std::cout << pose << std::endl;
+				pose.getData(values);
+				std::cout << values[3] << ", " << values[7] << ", " << values[11] << std::endl;
 			}
 		}
 		movie.release();
