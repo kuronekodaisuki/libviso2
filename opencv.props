@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <OPENCV_DIR>C:\opencv\4.5.5\install</OPENCV_DIR>
+    <OPENCV_DIR>C:\opencv\4.5.5</OPENCV_DIR>
   </PropertyGroup>
   <!-- Debug|x64 -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -13,10 +13,10 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OPENCV_DIR)\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world340d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OPENCV_DIR)\\x64\vc14\bin\opencv_world340d.dll "$(OutDir)"</Command>
+      <Command>copy $(OPENCV_DIR)\\x64\bin\opencv_world455d.dll "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <!-- Release|x64 -->
@@ -28,10 +28,10 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OPENCV_DIR)\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world340.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world455.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OPENCV_DIR)\\x64\vc14\bin\opencv_world340.dll "$(OutDir)"</Command>
+      <Command>copy $(OPENCV_DIR)\\x64\bin\opencv_world455.dll "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
 </Project>

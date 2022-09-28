@@ -46,9 +46,10 @@ int main(int argc, char *argv[])
 	// visual odometry初期化
 	VisualOdometryMono viso(param);
 
-	cv::VideoCapture movie;
+	cv::VideoCapture camera;
 
-	if (2 <= argc && movie.open(argv[1]))
+	// 動画ファイルの場合
+	if (2 <= argc && camera.open(argv[1]))
 	{
 		cv::Mat image, gray;
 		cv::VideoWriter writer;
@@ -58,9 +59,9 @@ int main(int argc, char *argv[])
 			write = writer.open(argv[2], cv::VideoWriter::fourcc('M', 'P', '4', 'S'), 30, cv::Size(IMAGE_WIDTH, IMAGE_HEIGHT));
 		}
 
-		while (movie.grab())
+		while (camera.grab())
 		{
-			movie.retrieve(image);
+			camera.retrieve(image);
 			cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
 
 			int width = gray.cols;
@@ -99,7 +100,61 @@ int main(int argc, char *argv[])
 		}
 		if (write)
 			writer.release();
-		movie.release();
+		camera.release();
+	}
+	else if (camera.open(0))
+	{
+		cv::Mat image, gray;
+		cv::VideoWriter writer;
+		bool write = false;
+
+		write = writer.open("output.mp4", cv::VideoWriter::fourcc('M', 'P', '4', 'S'), 30, cv::Size(IMAGE_WIDTH, IMAGE_HEIGHT));
+
+		for (bool loop = true; loop && camera.grab(); )
+		{
+			camera.retrieve(image);
+			cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+
+			int width = gray.cols;
+			int height = gray.rows;
+			int bypePerLine = gray.step;
+
+			int32_t dims[] = { width, height, bypePerLine };
+			if (viso.process(gray.data, dims))
+			{
+				// 移動行列を更新
+				pose = pose * Matrix::inv(viso.getMotion());
+
+				if (write)
+				{
+					std::vector<Matcher::p_match> matched = viso.getMatches();
+					std::vector<int> indices = viso.getInlierIndices();
+					for (size_t idx = 0; idx < indices.size(); idx++)
+					{
+						int i = indices[idx];
+						cv::line(image, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(0, 0, 255), 2);
+					}
+					writer.write(image);
+				}
+				// output some statistics
+				double num_matches = viso.getNumberOfMatches();
+				double num_inliers = viso.getNumberOfInliers();
+				VISO2::FLOAT values[16];
+
+				// poseの情報を表示
+				//std::cout << "Matches: " << num_matches;
+				//std::cout << ", Inliers: " << 100.0 * num_inliers / num_matches << "%, ";
+				//std::cout << pose << std::endl;
+				pose.getData(values);
+				//std::cout << values[3] << ", " << values[7] << ", " << values[11] << std::endl;
+
+				if (cv::waitKey(10) == 'q')
+					loop = false;
+			}
+		}
+
+		writer.release();
+		camera.release();
 	}
 }
 
