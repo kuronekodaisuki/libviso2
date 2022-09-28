@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
+#include <exception>
 
 // libviso2
 #include <viso_mono.h>
@@ -121,36 +122,45 @@ int main(int argc, char *argv[])
 			int bypePerLine = gray.step;
 
 			int32_t dims[] = { width, height, bypePerLine };
-			if (viso.process(gray.data, dims))
+
+			try
 			{
-				// 移動行列を更新
-				pose = pose * Matrix::inv(viso.getMotion());
-
-				if (write)
+				if (viso.process(gray.data, dims))
 				{
-					std::vector<Matcher::p_match> matched = viso.getMatches();
-					std::vector<int> indices = viso.getInlierIndices();
-					for (size_t idx = 0; idx < indices.size(); idx++)
+					// 移動行列を更新
+					pose = pose * Matrix::inv(viso.getMotion());
+
+					if (write)
 					{
-						int i = indices[idx];
-						cv::line(image, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(0, 0, 255), 2);
+						std::vector<Matcher::p_match> matched = viso.getMatches();
+						std::vector<int> indices = viso.getInlierIndices();
+						for (size_t idx = 0; idx < indices.size(); idx++)
+						{
+							int i = indices[idx];
+							cv::line(image, cv::Point(matched[i].u1c, matched[i].v1c), cv::Point(matched[i].u1p, matched[i].v1p), cv::Scalar(0, 0, 255), 2);
+						}
+						writer.write(image);
 					}
-					writer.write(image);
+					// output some statistics
+					double num_matches = viso.getNumberOfMatches();
+					double num_inliers = viso.getNumberOfInliers();
+					VISO2::FLOAT values[16];
+
+					// poseの情報を表示
+					//std::cout << "Matches: " << num_matches;
+					//std::cout << ", Inliers: " << 100.0 * num_inliers / num_matches << "%, ";
+					//std::cout << pose << std::endl;
+					pose.getData(values);
+					//std::cout << values[3] << ", " << values[7] << ", " << values[11] << std::endl;
+
+					if (cv::waitKey(10) == 'q')
+						loop = false;
 				}
-				// output some statistics
-				double num_matches = viso.getNumberOfMatches();
-				double num_inliers = viso.getNumberOfInliers();
-				VISO2::FLOAT values[16];
+			}
+			catch (std::exception e)
+			{
+				std::cout << e.what() << std::endl;
 
-				// poseの情報を表示
-				//std::cout << "Matches: " << num_matches;
-				//std::cout << ", Inliers: " << 100.0 * num_inliers / num_matches << "%, ";
-				//std::cout << pose << std::endl;
-				pose.getData(values);
-				//std::cout << values[3] << ", " << values[7] << ", " << values[11] << std::endl;
-
-				if (cv::waitKey(10) == 'q')
-					loop = false;
 			}
 		}
 
